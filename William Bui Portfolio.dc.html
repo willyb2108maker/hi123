@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>William Bui — Web Designer &amp; Developer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="William Bui — Premium Web Designer &amp; Developer creating stunning digital experiences.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: #000008; color: #dce2f0; font-family: 'Inter', system-ui, sans-serif; overflow-x: hidden; cursor: none; }
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.16); border-radius: 2px; }
+    ::selection { background: rgba(255,255,255,.12); color: #fff; }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; cursor: none; border: none; background: none; }
+    input, textarea { font-family: 'Inter', sans-serif; outline: none; border: none; }
+    textarea { resize: none; }
+    input::placeholder, textarea::placeholder { color: rgba(220,226,240,.22); }
+
+    /* ── CURSOR ── */
+    #wb-dot {
+      position: fixed; width: 7px; height: 7px;
+      background: #fff; border-radius: 50%;
+      pointer-events: none; z-index: 99999;
+      transform: translate(-50%,-50%);
+      box-shadow: 0 0 10px rgba(255,255,255,.55);
+    }
+    #wb-ring {
+      position: fixed; width: 34px; height: 34px;
+      border: 1.5px solid rgba(255,255,255,.25);
+      border-radius: 50%; pointer-events: none; z-index: 99998;
+      transform: translate(-50%,-50%);
+      transition: width .3s ease, height .3s ease, border-color .3s ease, background .3s ease;
+    }
+    #wb-ring.hov { width: 56px; height: 56px; border-color: rgba(255,255,255,.5); background: rgba(255,255,255,.04); }
+
+    /* ── NAV ── */
+    #wb-nav.scrolled {
+      background: rgba(0,0,12,.88) !important;
+      backdrop-filter: blur(28px) !important;
+      -webkit-backdrop-filter: blur(28px) !important;
+      border-bottom: 1px solid rgba(255,255,255,.055) !important;
+    }
+    .wbnl {
+      font-size: 14px; color: rgba(220,226,240,.52);
+      letter-spacing: .2px; transition: color .25s;
+      position: relative;
+    }
+    .wbnl::after {
+      content:''; position: absolute; bottom: -3px; left: 0;
+      width: 0; height: 1px; background: rgba(255,255,255,.7);
+      transition: width .3s ease;
+    }
+    .wbnl:hover { color: rgba(220,226,240,.95); }
+    .wbnl:hover::after { width: 100%; }
+
+    /* ── GLASS ── */
+    .glass {
+      background: rgba(255,255,255,.028);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 16px;
+      transition: background .3s, border-color .3s, box-shadow .3s;
+    }
+    .glass:hover {
+      background: rgba(255,255,255,.05);
+      border-color: rgba(255,255,255,.12);
+      box-shadow: 0 20px 60px rgba(0,0,0,.55), 0 0 22px rgba(255,255,255,.02);
+    }
+
+    /* ── BUTTONS ── */
+    .btn-p {
+      display: inline-flex; align-items: center; gap: 9px;
+      background: #ffffff;
+      color: #000008; font-weight: 700; font-size: 14.5px;
+      padding: 14px 30px; border-radius: 40px; letter-spacing: .2px;
+      box-shadow: 0 0 24px rgba(255,255,255,.12);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn-p:hover { transform: translateY(-2px); box-shadow: 0 12px 44px rgba(255,255,255,.22); }
+    .btn-s {
+      display: inline-flex; align-items: center; gap: 9px;
+      color: rgba(220,226,240,.78); font-weight: 500; font-size: 14.5px;
+      padding: 14px 30px; border-radius: 40px;
+      border: 1px solid rgba(255,255,255,.13);
+      transition: border-color .2s, color .2s, background .2s, transform .2s;
+    }
+    .btn-s:hover { border-color: rgba(255,255,255,.32); color: #fff; background: rgba(255,255,255,.05); transform: translateY(-2px); }
+
+    /* ── SECTION UTILITIES ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(255,255,255,.055); border: 1px solid rgba(255,255,255,.13);
+      border-radius: 30px; padding: 5px 15px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: rgba(255,255,255,.62); letter-spacing: 2px; text-transform: uppercase;
+    }
+    .stitle {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(30px,4.5vw,54px);
+      font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; color: #fff;
+    }
+    .gtext {
+      background: linear-gradient(135deg, #ffffff 0%, #c8c8c8 48%, #ffffff 100%);
+      background-size: 200% 200%;
+      animation: gradAnim 6s ease infinite;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .muted { color: rgba(220,226,240,.5); }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* ── KEYFRAMES ── */
+    @keyframes gradAnim { 0%,100% { background-position:0% 50%; } 50% { background-position:100% 50%; } }
+    @keyframes float1 { 0%,100% { transform:translateY(0) rotate(0deg); } 50% { transform:translateY(-22px) rotate(1.5deg); } }
+    @keyframes float2 { 0%,100% { transform:translateY(-10px) rotate(-.8deg); } 50% { transform:translateY(12px) rotate(.8deg); } }
+    @keyframes float3 { 0%,100% { transform:translateY(0) translateX(0); } 33% { transform:translateY(-14px) translateX(7px); } 66% { transform:translateY(7px) translateX(-7px); } }
+    @keyframes floatCode { 0%,100% { transform:translateY(0); opacity:.1; } 50% { transform:translateY(-26px); opacity:.05; } }
+    @keyframes aur1 {
+      0%,100% { transform:translate(-50%,-50%) scale(1) rotate(0deg); opacity:.3; }
+      33% { transform:translate(-38%,-62%) scale(1.18) rotate(14deg); opacity:.5; }
+      66% { transform:translate(-62%,-38%) scale(.88) rotate(-12deg); opacity:.18; }
+    }
+    @keyframes aur2 {
+      0%,100% { transform:translate(-50%,-50%) scale(1); opacity:.2; }
+      50% { transform:translate(-50%,-50%) scale(1.28); opacity:.38; }
+    }
+    @keyframes aur3 {
+      0%,100% { transform:translate(-50%,-50%) scale(1) rotate(0deg); opacity:.15; }
+      50% { transform:translate(-55%,-45%) scale(1.2) rotate(20deg); opacity:.28; }
+    }
+    @keyframes borderFlow {
+      0% { background-position:0% 50%; }
+      100% { background-position:400% 50%; }
+    }
+    @keyframes scrollBounce {
+      0%,100% { transform:translateX(-50%) translateY(0); }
+      50% { transform:translateX(-50%) translateY(9px); }
+    }
+    @keyframes spinRing { to { transform:rotate(360deg); } }
+    @keyframes glowPulse {
+      0%,100% { box-shadow:0 0 12px rgba(255,255,255,.2); }
+      50% { box-shadow:0 0 28px rgba(255,255,255,.45), 0 0 50px rgba(255,255,255,.1); }
+    }
+    @keyframes dotPulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:.5; transform:scale(.8); }
+    }
+
+    /* ── PRICING BORDER ── */
+    .pop-border {
+      position:absolute; inset:-1.5px; border-radius:17.5px;
+      background:linear-gradient(90deg,rgba(255,255,255,.8),rgba(255,255,255,.18),rgba(255,255,255,.8),rgba(255,255,255,.18),rgba(255,255,255,.8));
+      background-size:400% 100%;
+      animation:borderFlow 4s linear infinite;
+      z-index:-1;
+    }
+
+    /* ── MISC ── */
+    .chk { display:flex; align-items:center; gap:12px; font-size:14px; color:rgba(220,226,240,.72); }
+    .chkd { width:20px; height:20px; border-radius:50%; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:10px; color:rgba(255,255,255,.8); }
+    .slink { width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.07); display:flex; align-items:center; justify-content:center; color:rgba(220,226,240,.55); font-size:18px; transition:background .25s,border-color .25s,color .25s,transform .25s; text-decoration:none; }
+    .slink:hover { background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.28); color:#fff; transform:translateY(-3px); }
+    .finput { width:100%; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:13px 16px; color:#dce2f0; font-size:14px; transition:border-color .25s,background .25s; }
+    .finput:focus { border-color:rgba(255,255,255,.28); background:rgba(255,255,255,.04); }
+    .bchr { background:rgba(18,20,32,1); border-radius:10px 10px 0 0; padding:11px 14px 0; border:1px solid rgba(255,255,255,.07); border-bottom:none; }
+    .bbody { border:1px solid rgba(255,255,255,.07); border-top:none; border-radius:0 0 10px 10px; overflow:hidden; }
+    .skill-glw { position:absolute; inset:0; border-radius:inherit; opacity:0; transition:opacity .3s; pointer-events:none; }
+    .glass:hover .skill-glw { opacity:1; }
+    .divline { position:absolute; top:0; left:50%; transform:translateX(-50%); width:600px; height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width:900px) {
+      .wb-nav-mid { display:none !important; }
+      .wb-nav-cta { display:none !important; }
+      .ab-grid { grid-template-columns:1fr !important; gap:48px !important; }
+      .pj-grid1, .pj-grid2 { grid-template-columns:1fr !important; }
+      .pj-grid2 > div:first-child { order:2; padding:20px 20px 28px !important; }
+      .pj-grid2 > div:last-child { order:1; }
+      .ct-grid { grid-template-columns:1fr !important; }
+      #pricing .pg-grid { grid-template-columns:1fr !important; max-width:400px; margin:0 auto; }
+      #pricing .pg-grid > div:nth-child(2) { margin-top:0 !important; }
+    }
+    @media (max-width:768px) {
+      body { cursor:auto !important; }
+      #wb-dot, #wb-ring { display:none !important; }
+      .sk-grid { grid-template-columns:repeat(2,1fr) !important; }
+      .sv-grid { grid-template-columns:repeat(2,1fr) !important; }
+      .frm-row { grid-template-columns:1fr !important; }
+    }
+    @media (max-width:480px) {
+      .sk-grid, .sv-grid { grid-template-columns:1fr !important; }
+    }
+  </style>
+</helmet>
+
+<!-- ═══════════════════ LOADER ═══════════════════ -->
+<div id="wb-loader" style="position:fixed;inset:0;background:#000008;z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;transition:opacity .8s ease;">
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center;">
+    <div style="position:absolute;inset:0;border-radius:50%;border:1.5px solid transparent;border-top-color:rgba(255,255,255,.85);border-right-color:rgba(255,255,255,.18);animation:spinRing 1.4s linear infinite;"></div>
+    <div style="position:absolute;inset:8px;border-radius:50%;border:1px solid rgba(255,255,255,.2);animation:spinRing 2s linear infinite reverse;"></div>
+    <span class="gtext" style="font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;letter-spacing:-1px;">WB</span>
+  </div>
+  <div class="mono muted" style="font-size:10.5px;letter-spacing:3.5px;text-transform:uppercase;">Initializing Experience</div>
+  <div style="width:190px;height:2px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;">
+    <div id="wb-bar" style="height:100%;width:0%;background:linear-gradient(90deg,rgba(255,255,255,.88),rgba(255,255,255,.38));border-radius:2px;transition:width .07s linear;"></div>
+  </div>
+  <div id="wb-pct" class="mono" style="font-size:11.5px;color:rgba(255,255,255,.42);">0%</div>
+</div>
+
+<!-- ═══════════════════ CURSOR ═══════════════════ -->
+<div id="wb-dot" style="left:-100px;top:-100px;"></div>
+<div id="wb-ring" style="left:-100px;top:-100px;"></div>
+
+<!-- ═══════════════════ GALAXY CANVAS ═══════════════════ -->
+<canvas id="wb-galaxy" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block;"></canvas>
+
+<!-- ═══════════════════ MOUSE LIGHT ═══════════════════ -->
+<div id="wb-mlight" style="position:fixed;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.016) 0%,transparent 65%);pointer-events:none;z-index:1;transform:translate(-50%,-50%);left:-400px;top:-400px;transition:left .18s ease,top .18s ease;"></div>
+
+<!-- ═══════════════════ NAVIGATION ═══════════════════ -->
+<nav id="wb-nav" style="position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 clamp(20px,4vw,64px);height:68px;display:flex;align-items:center;justify-content:space-between;transition:background .3s,backdrop-filter .3s,border-bottom .3s;">
+  <a href="#hero" style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.5px;" class="gtext">William Bui</a>
+  <div class="wb-nav-mid" style="display:flex;align-items:center;gap:36px;">
+    <a href="#about" class="wbnl">About</a>
+    <a href="#skills" class="wbnl">Skills</a>
+    <a href="#services" class="wbnl">Services</a>
+    <a href="#pricing" class="wbnl">Pricing</a>
+    <a href="#projects" class="wbnl">Projects</a>
+  </div>
+  <a href="#contact" data-magnetic class="wb-nav-cta" style="font-size:13px;font-weight:500;color:rgba(220,226,240,.82);padding:9px 22px;border:1px solid rgba(255,255,255,.18);border-radius:30px;transition:background .2s,border-color .2s,color .2s;">Contact</a>
+</nav>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section id="hero" style="position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;z-index:1;padding:0 clamp(20px,5vw,80px);">
+
+  <!-- Aurora orbs -->
+  <div style="position:absolute;width:750px;height:750px;left:8%;top:15%;border-radius:50%;background:none;pointer-events:none;filter:blur(45px);"></div>
+  <div style="position:absolute;width:620px;height:620px;right:4%;top:8%;border-radius:50%;background:none;pointer-events:none;filter:blur(55px);"></div>
+  <div style="position:absolute;width:440px;height:440px;left:50%;bottom:8%;border-radius:50%;background:none;pointer-events:none;filter:blur(65px);"></div>
+
+  <!-- Floating code snippets -->
+  <div style="position:absolute;left:3%;top:28%;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.08);line-height:2;pointer-events:none;animation:floatCode 9s ease-in-out infinite;">
+    <div>const wb = {</div>
+    <div>&nbsp;&nbsp;name: "William Bui",</div>
+    <div>&nbsp;&nbsp;craft: "design",</div>
+    <div>&nbsp;&nbsp;passion: "code"</div>
+    <div>};</div>
+  </div>
+  <div style="position:absolute;right:3%;top:32%;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.07);line-height:2;pointer-events:none;animation:floatCode 11s ease-in-out infinite 2.5s;text-align:right;">
+    <div>useEffect(() =&gt; {</div>
+    <div>&nbsp;&nbsp;buildAmazing();</div>
+    <div>&nbsp;&nbsp;createFuture();</div>
+    <div>}, []);</div>
+  </div>
+  <div style="position:absolute;left:6%;bottom:30%;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.06);line-height:2;pointer-events:none;animation:floatCode 14s ease-in-out infinite 4s;">
+    <div>.hero {</div>
+    <div>&nbsp;&nbsp;animation: stellar;</div>
+    <div>&nbsp;&nbsp;depth: infinite;</div>
+    <div>}</div>
+  </div>
+
+  <!-- Hero content -->
+  <div style="position:relative;z-index:2;text-align:center;max-width:920px;width:100%;">
+    <div id="wbhl" style="opacity:0;transform:translateY(20px);display:inline-flex;margin-bottom:32px;">
+      <span class="badge">
+        <span style="width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.78);animation:dotPulse 2.2s infinite;flex-shrink:0;"></span>
+        Available for work
+      </span>
+    </div>
+
+    <h1 id="wbhn" style="font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:-3px;line-height:.92;margin-bottom:30px;">
+      <div style="overflow:hidden;">
+        <span class="wword" style="display:block;font-size:clamp(60px,11vw,148px);color:#fff;opacity:0;transform:translateY(90px);">William</span>
+      </div>
+      <div style="overflow:hidden;">
+        <span class="wword gtext" style="display:block;font-size:clamp(60px,11vw,148px);opacity:0;transform:translateY(90px);">Bui.</span>
+      </div>
+    </h1>
+
+    <div id="wbht" style="opacity:0;transform:translateY(24px);margin-bottom:18px;">
+      <span class="mono" style="font-size:clamp(13px,1.6vw,17px);color:rgba(220,226,240,.48);letter-spacing:3.5px;text-transform:uppercase;">Web Designer &amp; Developer</span>
+    </div>
+
+    <p id="wbhd" style="opacity:0;transform:translateY(24px);font-size:clamp(15px,1.7vw,18px);color:rgba(220,226,240,.5);line-height:1.75;max-width:520px;margin:0 auto 44px;">
+      I create premium websites and digital experiences that help businesses stand out and convert visitors into customers.
+    </p>
+
+    <div id="wbhb" style="opacity:0;transform:translateY(24px);display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;">
+      <a href="#projects" data-magnetic class="btn-p">View Projects <span style="font-size:17px;">→</span></a>
+      <a href="#contact" data-magnetic class="btn-s">Contact Me</a>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div id="wbhs" style="opacity:0;position:absolute;bottom:38px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;">
+    <span class="mono muted" style="font-size:10px;letter-spacing:4px;text-transform:uppercase;">Scroll</span>
+    <div style="width:1.5px;height:38px;background:linear-gradient(to bottom,rgba(255,255,255,.38),transparent);animation:scrollBounce 2.1s ease-in-out infinite;position:relative;left:50%;transform:translateX(-50%);"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════ ABOUT ═══════════════════ -->
+<section id="about" style="position:relative;z-index:1;padding:clamp(80px,10vw,140px) clamp(20px,5vw,80px);">
+  <div class="divline"></div>
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="ab-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;">
+
+      <!-- Left text -->
+      <div>
+        <div data-reveal style="margin-bottom:18px;opacity:0;transform:translateY(40px);"><span class="badge">About Me</span></div>
+        <h2 data-reveal data-delay=".1" class="stitle" style="margin-bottom:26px;opacity:0;transform:translateY(40px);">
+          Building Beautiful<br><span class="gtext">Digital Experiences.</span>
+        </h2>
+        <p data-reveal data-delay=".2" style="font-size:16px;line-height:1.85;color:rgba(220,226,240,.55);margin-bottom:22px;opacity:0;transform:translateY(40px);">
+          I design and develop modern websites with smooth interactions, stunning visuals, and high-converting user experiences. Every pixel is crafted with precision and intent.
+        </p>
+        <p data-reveal data-delay=".3" style="font-size:16px;line-height:1.85;color:rgba(220,226,240,.55);margin-bottom:52px;opacity:0;transform:translateY(40px);">
+          My work combines cutting-edge technology with thoughtful design — creating digital products that don't just look extraordinary, they perform exceptionally.
+        </p>
+
+        <!-- Stats grid -->
+        <div data-reveal data-delay=".4" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;opacity:0;transform:translateY(40px);">
+          <div class="glass" style="padding:24px 20px;text-align:center;">
+            <div class="gtext" style="font-family:'Space Grotesk',sans-serif;font-size:40px;font-weight:700;letter-spacing:-2px;">3+</div>
+            <div class="muted" style="font-size:12.5px;margin-top:5px;">Years Experience</div>
+          </div>
+          <div class="glass" style="padding:24px 20px;text-align:center;">
+            <div class="gtext" style="font-family:'Space Grotesk',sans-serif;font-size:40px;font-weight:700;letter-spacing:-2px;">50+</div>
+            <div class="muted" style="font-size:12.5px;margin-top:5px;">Projects Completed</div>
+          </div>
+          <div class="glass" style="padding:24px 20px;text-align:center;">
+            <div class="gtext" style="font-family:'Space Grotesk',sans-serif;font-size:40px;font-weight:700;letter-spacing:-2px;">100%</div>
+            <div class="muted" style="font-size:12.5px;margin-top:5px;">Client Satisfaction</div>
+          </div>
+          <div class="glass" style="padding:24px 20px;text-align:center;">
+            <div class="gtext" style="font-family:'Space Grotesk',sans-serif;font-size:40px;font-weight:700;letter-spacing:-2px;">24/7</div>
+            <div class="muted" style="font-size:12.5px;margin-top:5px;">Support</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right visual -->
+      <div data-reveal style="display:flex;align-items:center;justify-content:center;position:relative;min-height:420px;opacity:0;transform:translateY(40px);">
+        <!-- Orbit rings -->
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+          <div style="position:absolute;width:290px;height:290px;border-radius:50%;border:1px solid rgba(255,255,255,.08);animation:spinRing 22s linear infinite;"></div>
+          <div style="position:absolute;width:370px;height:370px;border-radius:50%;border:1px solid rgba(255,255,255,.06);animation:spinRing 38s linear infinite reverse;"></div>
+          <div style="position:absolute;width:200px;height:200px;border-radius:50%;border:1px solid rgba(255,255,255,.06);animation:spinRing 16s linear infinite;"></div>
+          <!-- Orbit dot -->
+          <div style="position:absolute;width:290px;height:290px;border-radius:50%;animation:spinRing 22s linear infinite;">
+            <div style="position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.82);box-shadow:0 0 12px rgba(255,255,255,.6);"></div>
+          </div>
+        </div>
+        <!-- Central card -->
+        <div class="glass" data-tilt style="width:248px;padding:36px 30px;text-align:center;position:relative;z-index:1;animation:float1 6.5s ease-in-out infinite;">
+          <div style="width:108px;height:108px;border-radius:50%;overflow:hidden;margin:0 auto 16px;border:2px solid rgba(255,255,255,.15);box-shadow:0 0 35px rgba(0,0,0,.6);"><img src="./uploads/730160902_17892221955545697_9110359024759630595_n-9e207097.jpg" style="width:100%;height:100%;object-fit:cover;object-position:center top;filter:grayscale(10%) contrast(1.05);" alt="William Bui"></div>
+          <div style="font-size:15px;font-weight:600;color:#fff;margin-bottom:4px;">William Bui</div>
+          <div class="muted" style="font-size:12px;">Web Designer &amp; Developer</div>
+          <div style="margin-top:22px;display:flex;align-items:center;justify-content:center;gap:8px;">
+            <span style="width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.75);display:inline-block;animation:glowPulse 2.2s infinite;"></span>
+            <span class="mono muted" style="font-size:10.5px;">Available for work</span>
+          </div>
+        </div>
+        <!-- Floating tech badges -->
+        <div class="glass" style="position:absolute;top:16%;right:4%;padding:9px 14px;animation:float2 5.2s ease-in-out infinite;white-space:nowrap;">
+          <span class="mono" style="font-size:11px;color:rgba(255,255,255,.72);">React</span>
+        </div>
+        <div class="glass" style="position:absolute;bottom:22%;left:2%;padding:9px 14px;animation:float3 7.5s ease-in-out infinite;white-space:nowrap;">
+          <span class="mono" style="font-size:11px;color:rgba(255,255,255,.72);">Three.js</span>
+        </div>
+        <div class="glass" style="position:absolute;top:56%;right:-2%;padding:9px 14px;animation:float1 9.5s ease-in-out infinite 1.2s;white-space:nowrap;">
+          <span class="mono" style="font-size:11px;color:rgba(255,255,255,.72);">GSAP</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ SKILLS ═══════════════════ -->
+<section id="skills" style="position:relative;z-index:1;padding:clamp(80px,10vw,140px) clamp(20px,5vw,80px);">
+  <div class="divline" style="background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);"></div>
+  <div style="max-width:1200px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:64px;">
+      <div data-reveal style="margin-bottom:16px;opacity:0;transform:translateY(40px);"><span class="badge">Skills</span></div>
+      <h2 data-reveal data-delay=".1" class="stitle" style="opacity:0;transform:translateY(40px);">Tech Stack &amp; <span class="gtext">Expertise</span></h2>
+    </div>
+    <div data-stagger class="sk-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
+
+      <div class="glass" data-tilt style="padding:28px 24px;position:relative;overflow:hidden;">
+        <div class="skill-glw" style="background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.05),transparent 70%);"></div>
+        <div style="width:34px;height:34px;margin-bottom:14px;"><svg viewBox="0 0 48 48" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.2"><circle cx="24" cy="24" r="3.5" fill="rgba(255,255,255,.78)" stroke="none"/><ellipse cx="24" cy="24" rx="20" ry="7.5"/><ellipse cx="24" cy="24" rx="20" ry="7.5" transform="rotate(60 24 24)"/><ellipse cx="24" cy="24" rx="20" ry="7.5" transform="rotate(120 24 24)"/></svg></div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;color:#fff;margin-bottom:5px;">React</div>
+        <div class="muted" style="font-size:12.5px;margin-bottom:16px;">Component-based UI</div>
+        <div style="height:2px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;"><div style="height:100%;width:93%;background:linear-gradient(90deg,rgba(255,255,255,.85),rgba(255,255,255,.3));border-radius:2px;"></div></div>
+      </div>
+
+      <div class="glass" data-tilt style="padding:28px 24px;position:relative;overflow:hidden;">
+        <div class="skill-glw" style="background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.05),transparent 70%);"></div>
+        <div style="width:34px;height:34px;margin-bottom:14px;"><svg viewBox="0 0 48 48" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 10 6 24 18 38"/><polyline points="30 10 42 24 30 38"/></svg></div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;color:#fff;margin-bottom:5px;">JavaScript</div>
+        <div class="muted" style="font-size:12.5px;margin-bottom:16px;">ES2024+, Async, DOM</div>
+        <div style="height:2px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;"><div style="height:100%;width:96%;background:linear-gradient(90deg,rgba(255,255,255,.85),rgba(255,255,255,.3));border-radius:2px;"></div></div>
+      </div>
+
+      <div class="glass" data-tilt style="padding:28px 24px;position:relative;overflow:hidden;">
+        <div class="skill-glw" style="background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.05),transparent 70%);"></div>
+        <div style="width:34px;height:34px;margin-bottom:14px;"><svg viewBox="0 0 48 48" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round"><path d="M7 14c4-8 10-8 14 0s10 8 14 0"/><path d="M7 24c4-8 10-8 14 0s10 8 14 0"/><path d="M7 34c4-8 10-8 14 0s10 8 14 0"/></svg></div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;color:#fff;margin-bottom:5px;">Tailwind CSS</div>
+        <div class="muted" style="font-size:12.5px;margin-bottom:16px;">Utility-first styling</div>
+        <div style="height:2px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;"><div style="height:100%;width:90%;background:linear-gradient(90deg,rgba(255,255,255,.85),rgba(255,255,255,.3));border-radius:2px;"></div></div>
+      </div>
+
+      <div class="glass" data-tilt style="padding:28px 24px;position:relative;overflow:hidden;">
+        <div class="skill-glw" style="background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.05),transparent 70%);"></div>
+        <div style="width:34px;height:34px;margin-bottom:14px;"><svg viewBox="0 0 48 48" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 8l28 16-28 16V8z" fill="rgba(255,255,255,.1)"/></svg></div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;color:#fff;margin-bottom:5px;">Framer Motion</div>
+        <div class="muted" style="font-size:12.5px;margin-bottom:16px;">Physics animations</div>
+        <div style="height:2px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;"><div style="height:100%;width:86%;background:linear-gradient(90deg,rgba(255,255,255,.85),rgba(255,255,255,.3));border-radius:2px;"></div></div>
+      </div>
+
+      <div class="glass" data-tilt style="padding:28px 24px;position:relative;overflow:hidden;">
+        <div class="skill-glw" style="background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.05),transparent 70%);"></div>
+        <div style="width:34px;height:34px;margin-bottom:14px;"><svg viewBox="0 0 48 48" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 10l10 34 6-14 14-6L10 10z" fill="rgba(255,255,255,.1)"/><line x1="30" y1="30" x2="40" y2="40"/></svg></div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;color:#fff;margin-bottom:5px;">UI/UX Design</div>
+        <div class="muted" style="font-size:12.5px;margin-bottom:16px;">User-centered design</div>
+        <div style="height:2px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;"><div style="height:100%;width:89%;background:linear-gradient(90deg,rgba(255,255,255,.85),rgba(255,255,255,.3));border-radius:2px;"></div></div>
+      </div>
+
+      <div class="glass" data-tilt style="padding:28px 24px;position:relative;overflow:hidden;">
+        <div class="skill-glw" style="background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.05),transparent 70%);"></div>
+        <div style="width:34px;height:34px;margin-bottom:14px;"><svg viewBox="0 0 48 48" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round"><circle cx="15" cy="12" r="4"/><circle cx="33" cy="12" r="4"/><circle cx="33" cy="28" r="4"/><circle cx="15" cy="36" r="4"/><line x1="19" y1="12" x2="29" y2="12"/><line x1="33" y1="16" x2="33" y2="24"/><line x1="29" y1="28" x2="19" y2="34"/></svg></div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;color:#fff;margin-bottom:5px;">Figma</div>
+        <div class="muted" style="font-size:12.5px;margin-bottom:16px;">Design &amp; prototyping</div>
+        <div style="height:2px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;"><div style="height:100%;width:88%;background:linear-gradient(90deg,rgba(255,255,255,.85),rgba(255,255,255,.3));border-radius:2px;"></div></div>
+      </div>
+
+      <div class="glass" data-tilt style="padding:28px 24px;position:relative;overflow:hidden;">
+        <div class="skill-glw" style="background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.05),transparent 70%);"></div>
+        <div style="width:34px;height:34px;margin-bottom:14px;"><svg viewBox="0 0 48 48" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M24 6L42 16v16L24 42 6 32V16L24 6z"/><line x1="24" y1="6" x2="24" y2="24"/><line x1="42" y1="16" x2="24" y2="24"/><line x1="6" y1="16" x2="24" y2="24"/></svg></div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;color:#fff;margin-bottom:5px;">Three.js</div>
+        <div class="muted" style="font-size:12.5px;margin-bottom:16px;">3D web experiences</div>
+        <div style="height:2px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;"><div style="height:100%;width:80%;background:linear-gradient(90deg,rgba(255,255,255,.9),rgba(255,255,255,.35));border-radius:2px;"></div></div>
+      </div>
+
+      <div class="glass" data-tilt style="padding:28px 24px;position:relative;overflow:hidden;">
+        <div class="skill-glw" style="background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.05),transparent 70%);"></div>
+        <div style="width:34px;height:34px;margin-bottom:14px;"><svg viewBox="0 0 48 48" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="4" width="20" height="40" rx="3"/><circle cx="24" cy="38" r="1.8" fill="rgba(255,255,255,.78)" stroke="none"/><line x1="19" y1="9" x2="29" y2="9"/></svg></div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;color:#fff;margin-bottom:5px;">Responsive</div>
+        <div class="muted" style="font-size:12.5px;margin-bottom:16px;">Mobile-first design</div>
+        <div style="height:2px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;"><div style="height:100%;width:97%;background:linear-gradient(90deg,rgba(255,255,255,.85),rgba(255,255,255,.3));border-radius:2px;"></div></div>
+      </div>
+
+      <div class="glass" data-tilt style="padding:28px 24px;position:relative;overflow:hidden;">
+        <div class="skill-glw" style="background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.05),transparent 70%);"></div>
+        <div style="width:34px;height:34px;margin-bottom:14px;"><svg viewBox="0 0 48 48" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round"><path d="M8 36a18 18 0 1 1 32 0"/><line x1="24" y1="36" x2="34" y2="18"/><circle cx="24" cy="36" r="2.5" fill="rgba(255,255,255,.78)" stroke="none"/></svg></div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;color:#fff;margin-bottom:5px;">Optimization</div>
+        <div class="muted" style="font-size:12.5px;margin-bottom:16px;">Performance &amp; SEO</div>
+        <div style="height:2px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;"><div style="height:100%;width:91%;background:linear-gradient(90deg,rgba(255,255,255,.85),rgba(255,255,255,.3));border-radius:2px;"></div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ SERVICES ═══════════════════ -->
+<section id="services" style="position:relative;z-index:1;padding:clamp(80px,10vw,140px) clamp(20px,5vw,80px);">
+  <div class="divline"></div>
+  <div style="max-width:1200px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:64px;">
+      <div data-reveal style="margin-bottom:16px;opacity:0;transform:translateY(40px);"><span class="badge">Services</span></div>
+      <h2 data-reveal data-delay=".1" class="stitle" style="opacity:0;transform:translateY(40px);">What I <span class="gtext">Offer</span></h2>
+      <p data-reveal data-delay=".2" style="margin-top:16px;font-size:16px;color:rgba(220,226,240,.45);max-width:420px;margin-left:auto;margin-right:auto;line-height:1.75;opacity:0;transform:translateY(40px);">Premium digital services crafted with attention to detail and a relentless pursuit of excellence.</p>
+    </div>
+    <div data-stagger class="sv-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:22px;">
+
+      <div class="glass" data-tilt style="padding:32px 28px;position:relative;overflow:hidden;">
+        <div style="width:50px;height:50px;border-radius:13px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);display:flex;align-items:center;justify-content:center;margin-bottom:20px;"><svg width="24" height="24" viewBox="0 0 48 48" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="40" height="28" rx="3"/><line x1="14" y1="42" x2="34" y2="42"/><line x1="24" y1="36" x2="24" y2="42"/></svg></div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;color:#fff;margin-bottom:10px;">Website Design</div>
+        <div class="muted" style="font-size:14px;line-height:1.75;">Stunning, conversion-focused websites designed to captivate and engage your audience from the first click.</div>
+      </div>
+
+      <div class="glass" data-tilt style="padding:32px 28px;position:relative;overflow:hidden;">
+        <div style="width:50px;height:50px;border-radius:13px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);display:flex;align-items:center;justify-content:center;margin-bottom:20px;"><svg width="24" height="24" viewBox="0 0 48 48" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="36" height="36" rx="3"/><line x1="6" y1="18" x2="42" y2="18"/><line x1="20" y1="18" x2="20" y2="42"/></svg></div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;color:#fff;margin-bottom:10px;">Landing Pages</div>
+        <div class="muted" style="font-size:14px;line-height:1.75;">High-converting landing pages that turn every visitor into a lead with precision-crafted copy and design.</div>
+      </div>
+
+      <div class="glass" data-tilt style="padding:32px 28px;position:relative;overflow:hidden;">
+        <div style="width:50px;height:50px;border-radius:13px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);display:flex;align-items:center;justify-content:center;margin-bottom:20px;"><svg width="24" height="24" viewBox="0 0 48 48" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="16" width="32" height="28"/><path d="M16 16V8h16v8"/><line x1="8" y1="44" x2="40" y2="44"/><rect x="20" y="30" width="8" height="14"/></svg></div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;color:#fff;margin-bottom:10px;">Business Websites</div>
+        <div class="muted" style="font-size:14px;line-height:1.75;">Professional business websites that establish authority, build trust, and generate real results.</div>
+      </div>
+
+      <div class="glass" data-tilt style="padding:32px 28px;position:relative;overflow:hidden;">
+        <div style="width:50px;height:50px;border-radius:13px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);display:flex;align-items:center;justify-content:center;margin-bottom:20px;"><svg width="24" height="24" viewBox="0 0 48 48" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round"><rect x="6" y="6" width="15" height="15" rx="2"/><rect x="27" y="6" width="15" height="15" rx="2"/><rect x="6" y="27" width="15" height="15" rx="2"/><rect x="27" y="27" width="15" height="15" rx="2"/></svg></div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;color:#fff;margin-bottom:10px;">Portfolio Websites</div>
+        <div class="muted" style="font-size:14px;line-height:1.75;">Beautiful portfolios that showcase your best work and attract the dream clients you deserve.</div>
+      </div>
+
+      <div class="glass" data-tilt style="padding:32px 28px;position:relative;overflow:hidden;">
+        <div style="width:50px;height:50px;border-radius:13px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);display:flex;align-items:center;justify-content:center;margin-bottom:20px;"><svg width="24" height="24" viewBox="0 0 48 48" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M42 24a18 18 0 1 1-6-13"/><polyline points="36 8 36 16 44 16"/></svg></div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;color:#fff;margin-bottom:10px;">Website Redesign</div>
+        <div class="muted" style="font-size:14px;line-height:1.75;">Transform your outdated website into a modern, high-performing digital experience that actually converts.</div>
+      </div>
+
+      <div class="glass" data-tilt style="padding:32px 28px;position:relative;overflow:hidden;">
+        <div style="width:50px;height:50px;border-radius:13px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);display:flex;align-items:center;justify-content:center;margin-bottom:20px;"><svg width="24" height="24" viewBox="0 0 48 48" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14l20 10 20-10L24 4 4 14z"/><path d="M4 24l20 10 20-10"/><path d="M4 34l20 10 20-10"/></svg></div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;color:#fff;margin-bottom:10px;">UI/UX Design</div>
+        <div class="muted" style="font-size:14px;line-height:1.75;">User-centered design that balances stunning aesthetics with intuitive, frictionless experiences.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ PRICING ═══════════════════ -->
+<section id="pricing" style="position:relative;z-index:1;padding:clamp(80px,10vw,140px) clamp(20px,5vw,80px);">
+  <div class="divline" style="background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);"></div>
+  <div style="max-width:1080px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:64px;">
+      <div data-reveal style="margin-bottom:16px;opacity:0;transform:translateY(40px);"><span class="badge">Pricing</span></div>
+      <h2 data-reveal data-delay=".1" class="stitle" style="opacity:0;transform:translateY(40px);">Transparent <span class="gtext">Pricing</span></h2>
+      <p data-reveal data-delay=".2" style="margin-top:16px;font-size:16px;color:rgba(220,226,240,.45);max-width:400px;margin-left:auto;margin-right:auto;line-height:1.75;opacity:0;transform:translateY(40px);">All plans include unlimited revisions until you're completely satisfied.</p>
+    </div>
+
+    <div data-stagger class="pg-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:start;">
+
+      <!-- BASIC -->
+      <div class="glass" data-tilt style="padding:36px 30px;position:relative;overflow:hidden;">
+        <div class="muted mono" style="font-size:11px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:14px;">Basic</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:50px;font-weight:700;color:#fff;letter-spacing:-2.5px;line-height:1;margin-bottom:6px;">$99</div>
+        <div class="muted" style="font-size:13.5px;margin-bottom:28px;">Perfect to get started</div>
+        <div style="height:1px;background:rgba(255,255,255,.06);margin-bottom:28px;"></div>
+        <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:36px;">
+          <div class="chk"><div class="chkd">✓</div><span>1 Page Website</span></div>
+          <div class="chk"><div class="chkd">✓</div><span>Responsive Design</span></div>
+          <div class="chk"><div class="chkd">✓</div><span>Contact Form</span></div>
+          <div class="chk"><div class="chkd">✓</div><span>Fast Delivery</span></div>
+        </div>
+        <a href="#contact" data-magnetic class="btn-s" style="width:100%;justify-content:center;display:flex;">Get Started →</a>
+      </div>
+
+      <!-- STANDARD (Popular) -->
+      <div style="position:relative;z-index:1;margin-top:-10px;">
+        <div class="pop-border"></div>
+        <div data-tilt style="background:rgba(6,7,18,.96);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:16px;padding:36px 30px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:18px;right:18px;background:rgba(255,255,255,.9);color:#000008;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;">Popular</div>
+          <div class="muted mono" style="font-size:11px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:14px;">Standard</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:50px;font-weight:700;letter-spacing:-2.5px;line-height:1;margin-bottom:6px;" class="gtext">$199</div>
+          <div class="muted" style="font-size:13.5px;margin-bottom:28px;">Most popular choice</div>
+          <div style="height:1px;background:rgba(255,255,255,.08);margin-bottom:28px;"></div>
+          <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:36px;">
+            <div class="chk"><div class="chkd">✓</div><span>Up to 5 Pages</span></div>
+            <div class="chk"><div class="chkd">✓</div><span>Premium Design</span></div>
+            <div class="chk"><div class="chkd">✓</div><span>Animations</span></div>
+            <div class="chk"><div class="chkd">✓</div><span>SEO Optimization</span></div>
+          </div>
+          <a href="#contact" data-magnetic class="btn-p" style="width:100%;justify-content:center;display:flex;">Get Started →</a>
+        </div>
+      </div>
+
+      <!-- ADVANCED -->
+      <div class="glass" data-tilt style="padding:36px 30px;position:relative;overflow:hidden;">
+        <div class="muted mono" style="font-size:11px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:14px;">Advanced</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:50px;font-weight:700;color:#fff;letter-spacing:-2.5px;line-height:1;margin-bottom:6px;">$299</div>
+        <div class="muted" style="font-size:13.5px;margin-bottom:28px;">The full experience</div>
+        <div style="height:1px;background:rgba(255,255,255,.06);margin-bottom:28px;"></div>
+        <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:36px;">
+          <div class="chk"><div class="chkd">✓</div><span>Fully Custom Website</span></div>
+          <div class="chk"><div class="chkd">✓</div><span>Premium Animations</span></div>
+          <div class="chk"><div class="chkd">✓</div><span>Booking System</span></div>
+          <div class="chk"><div class="chkd">✓</div><span>Priority Support</span></div>
+        </div>
+        <a href="#contact" data-magnetic class="btn-s" style="width:100%;justify-content:center;display:flex;">Get Started →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ PROJECTS ═══════════════════ -->
+<section id="projects" style="position:relative;z-index:1;padding:clamp(80px,10vw,140px) clamp(20px,5vw,80px);">
+  <div class="divline"></div>
+  <div style="max-width:1200px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:64px;">
+      <div data-reveal style="margin-bottom:16px;opacity:0;transform:translateY(40px);"><span class="badge">Projects</span></div>
+      <h2 data-reveal data-delay=".1" class="stitle" style="opacity:0;transform:translateY(40px);">Featured <span class="gtext">Work</span></h2>
+    </div>
+
+    <!-- Project 1 -->
+    <div data-reveal class="glass" style="padding:0;overflow:hidden;margin-bottom:28px;border-radius:20px;opacity:0;transform:translateY(40px);">
+      <div class="pj-grid1" style="display:grid;grid-template-columns:1.15fr 1fr;align-items:center;">
+        <!-- Mockup -->
+        <div style="padding:28px;">
+          <div class="bchr">
+            <div style="display:flex;align-items:center;gap:11px;">
+              <div style="display:flex;gap:5px;">
+                <div style="width:11px;height:11px;border-radius:50%;background:#ff5f57;"></div>
+                <div style="width:11px;height:11px;border-radius:50%;background:#febc2e;"></div>
+                <div style="width:11px;height:11px;border-radius:50%;background:#28c840;"></div>
+              </div>
+              <div style="flex:1;background:rgba(255,255,255,.05);border-radius:5px;padding:4px 13px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:rgba(220,226,240,.3);">williambuitest1.netlify.app</div>
+            </div>
+          </div>
+          <div class="bbody">
+            <div style="height:270px;background:linear-gradient(145deg,#16041e 0%,#2a0e34 35%,#451855 65%,#7a3060 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;position:relative;overflow:hidden;">
+              <div style="position:absolute;top:18%;right:12%;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(255,140,200,.22),transparent);filter:blur(22px);"></div>
+              <div style="position:absolute;bottom:12%;left:10%;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(200,80,255,.18),transparent);filter:blur(18px);"></div>
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;color:#f8d8ec;letter-spacing:2px;text-align:center;text-shadow:0 0 50px rgba(255,140,200,.6);">Beauty Place</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(248,216,236,.45);letter-spacing:4px;">OKC</div>
+              <div style="display:flex;gap:8px;margin-top:10px;">
+                <div style="width:88px;height:30px;background:linear-gradient(135deg,#c4587e,#8e2e52);border-radius:20px;opacity:.88;"></div>
+                <div style="width:78px;height:30px;background:rgba(255,255,255,.07);border-radius:20px;border:1px solid rgba(255,255,255,.14);"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Info -->
+        <div style="padding:40px 36px 40px 12px;">
+          <div style="display:inline-flex;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:4px 13px;margin-bottom:16px;"><span class="mono" style="font-size:10.5px;color:rgba(255,255,255,.58);letter-spacing:1px;">Project 01</span></div>
+          <h3 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(22px,2.4vw,30px);font-weight:700;color:#fff;letter-spacing:-1px;margin-bottom:14px;line-height:1.2;">Beauty Place OKC</h3>
+          <p class="muted" style="font-size:14.5px;line-height:1.85;margin-bottom:26px;">Luxury beauty salon website with elegant design and smooth animations. A premium digital experience built for a premium brand.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:32px;">
+            <span style="background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:5px 13px;font-size:12px;color:rgba(220,226,240,.65);">React</span>
+            <span style="background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:5px 13px;font-size:12px;color:rgba(220,226,240,.65);">Tailwind</span>
+            <span style="background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:5px 13px;font-size:12px;color:rgba(220,226,240,.65);">GSAP</span>
+            <span style="background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:5px 13px;font-size:12px;color:rgba(220,226,240,.65);">Framer Motion</span>
+          </div>
+          <a href="https://williambuitest1.netlify.app" target="_blank" rel="noopener" data-magnetic class="btn-p">View Live Site <span>↗</span></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project 2 -->
+    <div data-reveal class="glass" style="padding:0;overflow:hidden;border-radius:20px;opacity:0;transform:translateY(40px);">
+      <div class="pj-grid2" style="display:grid;grid-template-columns:1fr 1.15fr;align-items:center;">
+        <!-- Info -->
+        <div style="padding:40px 12px 40px 36px;">
+          <div style="display:inline-flex;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:4px 13px;margin-bottom:16px;"><span class="mono" style="font-size:10.5px;color:rgba(255,255,255,.58);letter-spacing:1px;">Project 02</span></div>
+          <h3 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(22px,2.4vw,30px);font-weight:700;color:#fff;letter-spacing:-1px;margin-bottom:14px;line-height:1.2;">Shampoo Avenue B</h3>
+          <p class="muted" style="font-size:14.5px;line-height:1.85;margin-bottom:26px;">Premium hair salon website redesign with a modern booking experience. Clean, contemporary, and conversion-focused.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:32px;">
+            <span style="background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:5px 13px;font-size:12px;color:rgba(220,226,240,.65);">React</span>
+            <span style="background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:5px 13px;font-size:12px;color:rgba(220,226,240,.65);">Next.js</span>
+            <span style="background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:5px 13px;font-size:12px;color:rgba(220,226,240,.65);">Tailwind</span>
+            <span style="background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:5px 13px;font-size:12px;color:rgba(220,226,240,.65);">Booking API</span>
+          </div>
+          <a href="https://williambuitest2.netlify.app" target="_blank" rel="noopener" data-magnetic class="btn-s" style="">View Live Site <span>↗</span></a>
+        </div>
+        <!-- Mockup -->
+        <div style="padding:28px;">
+          <div class="bchr">
+            <div style="display:flex;align-items:center;gap:11px;">
+              <div style="display:flex;gap:5px;">
+                <div style="width:11px;height:11px;border-radius:50%;background:#ff5f57;"></div>
+                <div style="width:11px;height:11px;border-radius:50%;background:#febc2e;"></div>
+                <div style="width:11px;height:11px;border-radius:50%;background:#28c840;"></div>
+              </div>
+              <div style="flex:1;background:rgba(255,255,255,.05);border-radius:5px;padding:4px 13px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:rgba(220,226,240,.3);">williambuitest2.netlify.app</div>
+            </div>
+          </div>
+          <div class="bbody">
+            <div style="height:270px;background:linear-gradient(145deg,#030c16 0%,#081828 35%,#0d2840 65%,#144158 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;position:relative;overflow:hidden;">
+              <div style="position:absolute;top:16%;right:14%;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(0,160,220,.22),transparent);filter:blur(16px);"></div>
+              <div style="position:absolute;bottom:18%;left:12%;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(0,200,230,.16),transparent);filter:blur(14px);"></div>
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;color:#d8eeff;letter-spacing:2px;text-align:center;text-shadow:0 0 50px rgba(0,150,255,.5);">Shampoo</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(200,230,255,.45);letter-spacing:4px;">AVENUE B</div>
+              <div style="width:110px;height:30px;background:linear-gradient(135deg,#0077bb,#004488);border-radius:7px;margin-top:10px;opacity:.9;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ CONTACT ═══════════════════ -->
+<section id="contact" style="position:relative;z-index:1;padding:clamp(80px,10vw,140px) clamp(20px,5vw,80px);">
+  <div class="divline" style="background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);"></div>
+  <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:900px;height:400px;background:radial-gradient(ellipse,rgba(255,255,255,.012),transparent 70%);pointer-events:none;"></div>
+  <div style="max-width:1080px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:64px;">
+      <div data-reveal style="margin-bottom:16px;opacity:0;transform:translateY(40px);"><span class="badge">Contact</span></div>
+      <h2 data-reveal data-delay=".1" class="stitle" style="opacity:0;transform:translateY(40px);">Let's Work <span class="gtext">Together</span></h2>
+      <p data-reveal data-delay=".2" style="margin-top:16px;font-size:16px;color:rgba(220,226,240,.45);max-width:400px;margin-left:auto;margin-right:auto;line-height:1.75;opacity:0;transform:translateY(40px);">Ready to elevate your online presence? Let's create something extraordinary together.</p>
+    </div>
+
+    <div class="ct-grid" style="display:grid;grid-template-columns:1fr 1.5fr;gap:40px;align-items:start;">
+
+      <!-- Left info -->
+      <div>
+        <div data-reveal class="glass" style="padding:30px;margin-bottom:16px;opacity:0;transform:translateY(40px);">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;color:#fff;margin-bottom:22px;">Get In Touch</div>
+          <div style="display:flex;flex-direction:column;gap:18px;">
+            <a href="tel:0345919053" style="display:flex;align-items:center;gap:15px;text-decoration:none;">
+              <div style="width:42px;height:42px;border-radius:11px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.88 19.79 19.79 0 01.01 1.27 2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.96a16 16 0 006.06 6.06l1.31-.76a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg></div>
+              <div>
+                <div class="muted" style="font-size:11.5px;margin-bottom:2px;">Phone</div>
+                <div style="font-size:14px;color:#e0e6f8;">0345 919 053</div>
+              </div>
+            </a>
+            <a href="mailto:btuankiet819@gmail.com" style="display:flex;align-items:center;gap:15px;text-decoration:none;">
+              <div style="width:42px;height:42px;border-radius:11px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg></div>
+              <div>
+                <div class="muted" style="font-size:11.5px;margin-bottom:2px;">Email</div>
+                <div style="font-size:14px;color:#e0e6f8;">btuankiet819@gmail.com</div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div data-reveal data-delay=".12" class="glass" style="padding:30px;opacity:0;transform:translateY(40px);">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;color:#fff;margin-bottom:18px;">Find Me Online</div>
+          <div style="display:flex;gap:10px;">
+            <a href="https://facebook.com/haterjk21" target="_blank" rel="noopener" class="slink" title="Facebook">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path></svg>
+            </a>
+            <a href="https://www.instagram.com/_iamwilli4m_" target="_blank" rel="noopener" class="slink" title="Instagram">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right form -->
+      <div data-reveal data-delay=".1" class="glass" style="padding:38px;position:relative;overflow:hidden;opacity:0;transform:translateY(40px);" id="wb-form-wrap">
+        <div style="position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,255,.04),transparent);pointer-events:none;"></div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;color:#fff;margin-bottom:6px;">Send a Message</div>
+        <p class="muted" style="font-size:13.5px;margin-bottom:30px;">I'll get back to you within 24 hours.</p>
+
+        <form id="wb-form" style="display:flex;flex-direction:column;gap:15px;">
+          <div class="frm-row" style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+            <div>
+              <label style="display:block;font-size:11px;color:rgba(220,226,240,.45);margin-bottom:7px;letter-spacing:.8px;text-transform:uppercase;">Name</label>
+              <input type="text" placeholder="Your name" class="finput" required>
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;color:rgba(220,226,240,.45);margin-bottom:7px;letter-spacing:.8px;text-transform:uppercase;">Email</label>
+              <input type="email" placeholder="your@email.com" class="finput" required>
+            </div>
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;color:rgba(220,226,240,.45);margin-bottom:7px;letter-spacing:.8px;text-transform:uppercase;">Subject</label>
+            <input type="text" placeholder="Project inquiry..." class="finput">
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;color:rgba(220,226,240,.45);margin-bottom:7px;letter-spacing:.8px;text-transform:uppercase;">Message</label>
+            <textarea placeholder="Tell me about your project..." class="finput" rows="5" style="width:100%;"></textarea>
+          </div>
+          <button type="submit" data-magnetic class="btn-p" style="align-self:flex-start;margin-top:6px;">Send Message <span>→</span></button>
+        </form>
+
+        <!-- Success -->
+        <div id="wb-success" style="display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:50px 20px;gap:18px;">
+          <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.88);display:flex;align-items:center;justify-content:center;font-size:26px;color:#000008;box-shadow:0 0 40px rgba(255,255,255,.16);">✓</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:#fff;">Message Sent!</div>
+          <div class="muted" style="font-size:15px;line-height:1.75;max-width:280px;">Thank you for reaching out. I'll be in touch within 24 hours.</div>
+          <button id="wb-reset" class="btn-s" style="margin-top:6px;">Send Another ↩</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer style="position:relative;z-index:1;padding:44px clamp(20px,5vw,80px);border-top:1px solid rgba(255,255,255,.055);">
+  <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;">
+    <div>
+      <div class="gtext" style="font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px;">William Bui</div>
+      <div class="muted" style="font-size:12.5px;">Web Designer &amp; Developer</div>
+    </div>
+    <div class="mono muted" style="font-size:11.5px;letter-spacing:.4px;">© 2026 William Bui. All rights reserved.</div>
+    <div style="display:flex;gap:10px;">
+      <a href="https://facebook.com/haterjk21" target="_blank" rel="noopener" class="slink" style="width:36px;height:36px;font-size:13px;" title="Facebook">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path></svg>
+      </a>
+      <a href="https://www.instagram.com/_iamwilli4m_" target="_blank" rel="noopener" class="slink" style="width:36px;height:36px;font-size:13px;" title="Instagram">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {};
+  renderVals() { return {}; }
+
+  componentDidMount() {
+    this._wait(() => {
+      this._loader();
+      this._galaxy();
+      this._cursor();
+      this._nav();
+      this._magnetic();
+      this._tilt();
+      this._form();
+      this._mouseLight();
+    });
+  }
+
+  _wait(cb, n = 0) {
+    if (typeof THREE !== 'undefined' && typeof gsap !== 'undefined') {
+      cb();
+    } else if (n < 60) {
+      setTimeout(() => this._wait(cb, n + 1), 100);
+    } else {
+      // graceful fallback without 3D
+      this._loader();
+      this._cursor();
+      this._nav();
+      this._magnetic();
+      this._tilt();
+      this._form();
+      this._mouseLight();
+    }
+  }
+
+  _loader() {
+    const el = document.getElementById('wb-loader');
+    const bar = document.getElementById('wb-bar');
+    const pct = document.getElementById('wb-pct');
+    if (!el) return;
+    let p = 0;
+    const iv = setInterval(() => {
+      p += Math.random() * 13 + 3;
+      if (p >= 100) {
+        p = 100;
+        clearInterval(iv);
+        if (bar) bar.style.width = '100%';
+        if (pct) pct.textContent = '100%';
+        setTimeout(() => {
+          el.style.opacity = '0';
+          el.style.pointerEvents = 'none';
+          el.style.transition = 'opacity .85s ease';
+          setTimeout(() => {
+            el.style.display = 'none';
+            this._heroAnim();
+            this._gsap();
+          }, 900);
+        }, 380);
+        return;
+      }
+      if (bar) bar.style.width = Math.min(p, 100) + '%';
+      if (pct) pct.textContent = Math.floor(Math.min(p, 100)) + '%';
+    }, 75);
+  }
+
+  _galaxy() {
+    const canvas = document.getElementById('wb-galaxy');
+    if (!canvas || typeof THREE === 'undefined') return;
+
+    const scene = new THREE.Scene();
+    const W = window.innerWidth, H = window.innerHeight;
+    const camera = new THREE.PerspectiveCamera(70, W / H, 0.1, 2000);
+    camera.position.z = 88;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: false, antialias: true });
+    renderer.setSize(W, H);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000008, 1);
+
+    // ── Stars ──
+    const N = 5800;
+    const sp = new Float32Array(N * 3);
+    const sc = new Float32Array(N * 3);
+    const pal = [[1,1,1],[.74,.88,1],[1,.95,.82],[.86,.74,1],[.66,1,.94]];
+    for (let i = 0; i < N; i++) {
+      const r = 110 + Math.random() * 950;
+      const t = Math.random() * Math.PI * 2;
+      const p = Math.acos(2 * Math.random() - 1);
+      sp[i*3]   = r * Math.sin(p) * Math.cos(t);
+      sp[i*3+1] = r * Math.sin(p) * Math.sin(t);
+      sp[i*3+2] = r * Math.cos(p);
+      const c = pal[Math.floor(Math.random() * pal.length)];
+      const b = .5 + Math.random() * .5;
+      sc[i*3] = c[0]*b; sc[i*3+1] = c[1]*b; sc[i*3+2] = c[2]*b;
+    }
+    const sGeo = new THREE.BufferGeometry();
+    sGeo.setAttribute('position', new THREE.BufferAttribute(sp, 3));
+    sGeo.setAttribute('color',    new THREE.BufferAttribute(sc, 3));
+    const stars = new THREE.Points(sGeo, new THREE.PointsMaterial({ size: 1.25, vertexColors: true, transparent: true, opacity: .88, sizeAttenuation: true }));
+    scene.add(stars);
+
+    // ── Nebula ──
+    const NN = 750;
+    const np = new Float32Array(NN * 3);
+    const nc = new Float32Array(NN * 3);
+    const npal = [[.65,.65,.72],[.5,.5,.56],[.55,.55,.62],[.42,.42,.48]];
+    for (let i = 0; i < NN; i++) {
+      np[i*3]   = (Math.random()-.5)*320;
+      np[i*3+1] = (Math.random()-.5)*170;
+      np[i*3+2] = (Math.random()-.5)*95 - 25;
+      const c = npal[Math.floor(Math.random() * npal.length)];
+      nc[i*3] = c[0]; nc[i*3+1] = c[1]; nc[i*3+2] = c[2];
+    }
+    const nGeo = new THREE.BufferGeometry();
+    nGeo.setAttribute('position', new THREE.BufferAttribute(np, 3));
+    nGeo.setAttribute('color',    new THREE.BufferAttribute(nc, 3));
+    const nebula = new THREE.Points(nGeo, new THREE.PointsMaterial({ size: 15, vertexColors: true, transparent: true, opacity: .11, blending: THREE.AdditiveBlending }));
+    scene.add(nebula);
+
+    // ── Planet 1 (large, blue, right) ──
+    const p1 = new THREE.Mesh(
+      new THREE.SphereGeometry(9.5, 64, 64),
+      new THREE.MeshPhongMaterial({ color: 0x666677, emissive: 0x111118, shininess: 110 })
+    );
+    p1.position.set(62, 14, -55);
+    scene.add(p1);
+
+    // Ring around Planet 1
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(15.5, .6, 8, 120),
+      new THREE.MeshPhongMaterial({ color: 0x999aaa, emissive: 0x222228, transparent: true, opacity: .45 })
+    );
+    ring.rotation.x = Math.PI * .38;
+    ring.position.copy(p1.position);
+    scene.add(ring);
+
+    // ── Planet 2 (smaller, gray, left) ──
+    const p2 = new THREE.Mesh(
+      new THREE.SphereGeometry(5.5, 48, 48),
+      new THREE.MeshPhongMaterial({ color: 0x444455, emissive: 0x0a0a12, shininess: 80 })
+    );
+    p2.position.set(-62, -5, -32);
+    scene.add(p2);
+
+    // Moon around Planet 2
+    const moon = new THREE.Mesh(
+      new THREE.SphereGeometry(1.4, 16, 16),
+      new THREE.MeshPhongMaterial({ color: 0xccccdd, emissive: 0x111118 })
+    );
+    scene.add(moon);
+
+    // ── Lights ──
+    scene.add(new THREE.AmbientLight(0x222233, .9));
+    const l1 = new THREE.PointLight(0x9999bb, 3.5, 260); l1.position.set(75, 70, 65); scene.add(l1);
+    const l2 = new THREE.PointLight(0x778899, 2.2, 210); l2.position.set(-72, -44, 38); scene.add(l2);
+    const l3 = new THREE.PointLight(0xaabbcc, 1.4, 140); l3.position.set(0, -52, 32); scene.add(l3);
+
+    // ── Mouse parallax ──
+    let mx = 0, my = 0, tx = 0, ty = 0;
+    const onMM = e => { mx = e.clientX - window.innerWidth / 2; my = e.clientY - window.innerHeight / 2; };
+    window.addEventListener('mousemove', onMM, { passive: true });
+
+    const onResize = () => {
+      const W = window.innerWidth, H = window.innerHeight;
+      camera.aspect = W / H;
+      camera.updateProjectionMatrix();
+      renderer.setSize(W, H);
+    };
+    window.addEventListener('resize', onResize);
+
+    let t = 0;
+    const tick = () => {
+      this._raf = requestAnimationFrame(tick);
+      t += .0008;
+
+      stars.rotation.y = t * .022;
+      stars.rotation.x = t * .007;
+      nebula.rotation.y = t * .014;
+
+      p1.rotation.y = t * 2.6;
+      p2.rotation.y = t * 2.1;
+      p1.position.y = 14 + Math.sin(t * .68) * 4;
+      p2.position.y = -5 + Math.sin(t * .52 + 1.1) * 3.5;
+      ring.position.y = p1.position.y;
+      ring.rotation.z = t * .38;
+
+      moon.position.x = p2.position.x + Math.cos(t * 2.1) * 10;
+      moon.position.y = p2.position.y + Math.sin(t * 2.1) * 5;
+      moon.position.z = p2.position.z + Math.sin(t * 2.1 * .7) * 3;
+
+      tx += (mx - tx) * .024;
+      ty += (my - ty) * .024;
+      camera.rotation.y = tx * .00034;
+      camera.rotation.x = ty * .00024;
+
+      renderer.render(scene, camera);
+    };
+    tick();
+
+    this._galaxyKill = () => {
+      cancelAnimationFrame(this._raf);
+      window.removeEventListener('mousemove', onMM);
+      window.removeEventListener('resize', onResize);
+      renderer.dispose();
+    };
+  }
+
+  _cursor() {
+    const dot  = document.getElementById('wb-dot');
+    const ring = document.getElementById('wb-ring');
+    if (!dot || !ring || window.innerWidth <= 768) return;
+
+    let cx = -100, cy = -100, rx = -100, ry = -100;
+    document.addEventListener('mousemove', e => { cx = e.clientX; cy = e.clientY; }, { passive: true });
+
+    const tick = () => {
+      dot.style.left = cx + 'px';
+      dot.style.top  = cy + 'px';
+      rx += (cx - rx) * .13;
+      ry += (cy - ry) * .13;
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(tick);
+    };
+    tick();
+
+    document.querySelectorAll('a, button, [data-magnetic], [data-tilt]').forEach(el => {
+      el.addEventListener('mouseenter', () => ring.classList.add('hov'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('hov'));
+    });
+  }
+
+  _nav() {
+    const nav = document.getElementById('wb-nav');
+    if (!nav) return;
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 45), { passive: true });
+  }
+
+  _mouseLight() {
+    const light = document.getElementById('wb-mlight');
+    if (!light) return;
+    document.addEventListener('mousemove', e => {
+      light.style.left = e.clientX + 'px';
+      light.style.top  = e.clientY + 'px';
+    }, { passive: true });
+  }
+
+  _heroAnim() {
+    if (typeof gsap === 'undefined') {
+      ['wbhl','wbht','wbhd','wbhb','wbhs'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.style.opacity = '1'; el.style.transform = 'none'; }
+      });
+      document.querySelectorAll('.wword').forEach(w => { w.style.opacity='1'; w.style.transform='none'; });
+      return;
+    }
+    const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+    tl.to('#wbhl',         { opacity: 1, y: 0, duration: .7 })
+      .to('.wword',        { opacity: 1, y: 0, stagger: .1, duration: .95 }, '-=.35')
+      .to('#wbht',         { opacity: 1, y: 0, duration: .7 }, '-=.55')
+      .to('#wbhd',         { opacity: 1, y: 0, duration: .7 }, '-=.5')
+      .to('#wbhb',         { opacity: 1, y: 0, duration: .7 }, '-=.48')
+      .to('#wbhs',         { opacity: 1,        duration: .55 }, '-=.2');
+  }
+
+  _gsap() {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+      document.querySelectorAll('[data-reveal]').forEach(el => { el.style.opacity='1'; el.style.transform='none'; });
+      return;
+    }
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Pre-hide stagger children
+    document.querySelectorAll('[data-stagger] > *').forEach(el => { el.style.opacity = '0'; });
+
+    document.querySelectorAll('[data-reveal]').forEach(el => {
+      const d = parseFloat(el.dataset.delay || 0);
+      gsap.to(el, {
+        opacity: 1, y: 0, duration: .95, delay: d, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+      });
+    });
+
+    document.querySelectorAll('[data-stagger]').forEach(container => {
+      gsap.fromTo(Array.from(container.children),
+        { opacity: 0, y: 55, scale: .92 },
+        { opacity: 1, y: 0, scale: 1, duration: .75, stagger: .08, ease: 'power3.out',
+          scrollTrigger: { trigger: container, start: 'top 88%', toggleActions: 'play none none none' } }
+      );
+    });
+  }
+
+  _magnetic() {
+    document.querySelectorAll('[data-magnetic]').forEach(btn => {
+      btn.addEventListener('mousemove', e => {
+        const r = btn.getBoundingClientRect();
+        const dx = (e.clientX - r.left - r.width/2) * .36;
+        const dy = (e.clientY - r.top - r.height/2) * .36;
+        btn.style.transition = 'transform .14s ease';
+        btn.style.transform = `translate(${dx}px,${dy}px)`;
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transition = 'transform .55s cubic-bezier(.16,1,.3,1)';
+        btn.style.transform = 'translate(0,0)';
+      });
+    });
+  }
+
+  _tilt() {
+    document.querySelectorAll('[data-tilt]').forEach(card => {
+      card.style.transformStyle = 'preserve-3d';
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const dx = (e.clientX - r.left - r.width/2) / (r.width/2);
+        const dy = (e.clientY - r.top - r.height/2) / (r.height/2);
+        card.style.transition = 'transform .1s ease';
+        card.style.transform = `perspective(1000px) rotateX(${-dy*7}deg) rotateY(${dx*7}deg) scale3d(1.02,1.02,1.02)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transition = 'transform .6s cubic-bezier(.16,1,.3,1)';
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1,1,1)';
+      });
+    });
+  }
+
+  _form() {
+    const form = document.getElementById('wb-form');
+    const succ = document.getElementById('wb-success');
+    const rst  = document.getElementById('wb-reset');
+    if (!form) return;
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      form.style.display = 'none';
+      if (succ) succ.style.display = 'flex';
+    });
+    if (rst) rst.addEventListener('click', () => {
+      form.style.display = 'flex';
+      form.reset();
+      if (succ) succ.style.display = 'none';
+    });
+  }
+
+  componentWillUnmount() {
+    if (this._galaxyKill) this._galaxyKill();
+  }
+}
+</script>
+</body>
+</html>
